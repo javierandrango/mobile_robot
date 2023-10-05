@@ -1,8 +1,16 @@
 #include <Arduino.h>
 #include <variables.h>
 #include <functions.h>
+
+#include "BluetoothSerial.h"
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+  #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+BluetoothSerial SerialBT;
+
+
 /*MOTORS FUNCTIONS---------------------------------------------------------------------------------------------------------*/
-void speed_right_motor(int right)                         
+void SpeedRightMotor(int right)                         
 {
   if(right >= 0)                                    
   {
@@ -20,7 +28,7 @@ void speed_right_motor(int right)
 }
 
 
-void speed_left_motor(int left)                         
+void SpeedLeftMotor(int left)                         
 {
   if(left >= 0)                                    
   {
@@ -38,7 +46,7 @@ void speed_left_motor(int left)
 }
 
 
-void speed_motors(int robot_speed)                         
+void SpeedMotors(int robot_speed)                         
 {
   if(robot_speed >= 0)                                    
   {
@@ -59,5 +67,27 @@ void speed_motors(int robot_speed)
     ledcWrite(pwm_right_channel, abs(robot_speed));
     ledcWrite(pwm_left_channel, abs(robot_speed));
   }
+}
+/*---------------------------------------------------------------------------------------------------------------------------*/
+
+
+/*BLUETOOTH FUNCTIONS--------------------------------------------------------------------------------------------------------*/
+void BluetoothConnection(){
+  SerialBT.begin("DIFFERENTIAL DRIVE ROBOT");
+}
+
+std::array<String,3> BluetoothAppReturn(){
+  std::array<String, 3> strings;
+  if (SerialBT.available()>0) {
+    String value = SerialBT.readStringUntil('#');//total array
+    if (value.length()==7){
+      strings[0] = value.substring(0,3); // angle
+      strings[1] = value.substring(3,6); // strength
+      strings[2] = value.substring(6,8); // button
+      SerialBT.flush();
+      value = "";
+    }  
+  }
+  return strings;
 }
 /*---------------------------------------------------------------------------------------------------------------------------*/

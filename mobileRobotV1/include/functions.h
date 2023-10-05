@@ -1,6 +1,10 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
-void speed_right_motor(int right);
-void speed_left_motor(int left);
-void speed_motors(int speed);
+//motors
+void SpeedRightMotor(int right);
+void SpeedLeftMotor(int left);
+void SpeedMotors(int speed);
+//bluetooth
+void BluetoothConnection();
+std::array<String,3> BluetoothAppReturn();
 #endif

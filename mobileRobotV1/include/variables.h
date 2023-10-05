@@ -18,11 +18,19 @@ const int motor_left_AIN2 = 12;
 const int motor_right_BIN1 = 26;
 const int motor_right_BIN2 = 25;
 
-const int pwm_frecuency = 980;           // PWM frecuency for arduino uno 
-const int pwm_left_channel = 0;          // 0-15 available channels (left motor channel) 
-const int pwm_right_channel = 1;         // 0-15 available channels (right motor channel)
-const int resolution = 8;                // 8-bit resolution means control values from 0 to 255
+const int pwm_frecuency = 980;             // PWM frecuency for arduino uno 
+const int pwm_left_channel = 0;            // 0-15 available channels (left motor channel) 
+const int pwm_right_channel = 1;           // 0-15 available channels (right motor channel)
+const int resolution = 8;                  // 8-bit resolution means control values from 0 to 255
 
+/*--------------------------------------------------------------------------------------------------------------------------*/
+
+/*BLUETOOTH VARIABLES AND CONFIGURATION-------------------------------------------------------------------------------------*/
+extern String angle;                       //joystick angle when preseed 0-359 degress
+extern String strength;                    //joystick strength when pressed 0-100
+extern String button;                      //pressed buttons (1-4)
+extern String value;                       //total string send from bluetooth app to
+extern char move_selector;                 //to select between different robot moves 
 /*--------------------------------------------------------------------------------------------------------------------------*/
 
 #endif

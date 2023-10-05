@@ -14,6 +14,11 @@ Simple mobile robot V1 (2 wheels - differential drive, no speed or odometry cont
 
     [https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
 
+3. Bluethooth controller app (Play Store):
+
+    Arduino Bluetooth Controlled J - Uncia Robotics.\
+    [https://play.google.com/store/apps/details?id=uncia.robotics.joystick&hl=es_PY&gl=US](https://play.google.com/store/apps/details?id=uncia.robotics.joystick&hl=es_PY&gl=US)
+
 ## Usage
 
 ## Support
