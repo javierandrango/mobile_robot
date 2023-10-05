@@ -7,9 +7,11 @@ Simple mobile robot V1 (2 wheels - differential drive, no speed or odometry cont
 
 ## Prerequisites
 1. Code directory structure was generated using VScode with PlatformIO IDE extension. A tutorial of how install and test bink-led can be found here:
+
     [https://randomnerdtutorials.com/vs-code-platformio-ide-esp32-esp8266-arduino/](https://randomnerdtutorials.com/vs-code-platformio-ide-esp32-esp8266-arduino/)
 
 2. for the first time using ESP32-DEVKITV1, CP210x USB to UART Bridge Virtual COM Port (VCP) drivers are required for device operation. Download compatible driver from:
+
     [https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
 
 ## Usage
