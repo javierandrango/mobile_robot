@@ -31,6 +31,8 @@ extern String strength;                    //joystick strength when pressed 0-10
 extern String button;                      //pressed buttons (1-4)
 extern String value;                       //total string send from bluetooth app to
 extern char move_selector;                 //to select between different robot moves 
+extern int blt_time_interval;              //to show data bluetooth every 50ms
+extern unsigned long blt_time_now;         //to show actual time 
 /*--------------------------------------------------------------------------------------------------------------------------*/
 
 #endif

@@ -7,13 +7,16 @@
 String angle;                       //joystick angle when preseed 0-359 degress
 String strength;                    //joystick strength when pressed 0-100
 String button;                      //pressed buttons (1-4)
+int blt_time_interval = 120;         //to show data bluetooth every 50ms
+unsigned long blt_time_now = 0;     //to show actual time 
 /*----------------------------------------------------------------------------------------------------------*/
+
 
 /*VOID SETUP -----------------------------------------------------------------------------------------------*/
 void setup() {
   // put your setup code here, to run once:
   SetupMotors();
-  BluetoothConnection();
+  BluetoothConnection("DIFFERENTIAL DRIVE ROBOT");
   Serial.begin(115200);
   /******************************************************************************/
   //test motors the first time
@@ -38,10 +41,12 @@ void loop() {
   button = app_data[2];
   /******************************************************************************/
   //test bluetooth the first time
+  /*
   Serial.print("Angle:"); Serial.print(angle.toInt()); Serial.print('\t');
   Serial.print("Strength:"); Serial.print(strength.toInt()); Serial.print('\t');
   Serial.print("Button:"); Serial.print(button.toInt()); Serial.println('\t');
-  delay(50);
+  */
   /******************************************************************************/
+  
 }
 /*----------------------------------------------------------------------------------------------------------*/

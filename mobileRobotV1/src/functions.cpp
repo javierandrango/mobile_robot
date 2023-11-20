@@ -72,8 +72,10 @@ void SpeedMotors(int robot_speed)
 
 
 /*BLUETOOTH FUNCTIONS--------------------------------------------------------------------------------------------------------*/
-void BluetoothConnection(){
-  SerialBT.begin("DIFFERENTIAL DRIVE ROBOT");
+void BluetoothConnection( String bluetooth_name ){
+  //Initialize Serial Bluetooth Connection
+  //bluetooth_name(String): any name to connect to the Esp32-bluetooth
+  SerialBT.begin(bluetooth_name);
 }
 
 std::array<String,3> BluetoothAppReturn(){
@@ -90,4 +92,5 @@ std::array<String,3> BluetoothAppReturn(){
   }
   return strings;
 }
+
 /*---------------------------------------------------------------------------------------------------------------------------*/
