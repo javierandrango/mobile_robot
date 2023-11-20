@@ -1,5 +1,5 @@
 # Mobile robot V1
-[![MasterHead](/images/pic1.jpg)]
+![MasterHead](/images/pic1.png)
 ## Description
 Simple mobile robot V1 (2 wheels - differential drive, no speed or odometry control yet)
 
