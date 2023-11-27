@@ -45,8 +45,6 @@ The code and configuration is based on ESP32 `DOIT ESP32 DEVKIT V1` board
 ```
 lab_iarobotico593@outlook.com
 ```
-## Licence
-
 ## Project status
 In development 
 
