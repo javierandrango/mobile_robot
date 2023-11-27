@@ -17,7 +17,7 @@ Simple mobile robot V1 (2 wheels - differential drive, no speed or odometry cont
 
     [https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
 
-2. Bluethooth controller app (Play Store):
+2. Bluetooth controller app (Play Store):
 
     Arduino Bluetooth Controlled J - Uncia Robotics.\
     [https://play.google.com/store/apps/details?id=uncia.robotics.joystick&hl=es_PY&gl=US](https://play.google.com/store/apps/details?id=uncia.robotics.joystick&hl=es_PY&gl=US)
@@ -32,10 +32,7 @@ The code and configuration is based on ESP32 `DOIT ESP32 DEVKIT V1` board
     ```
     https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
     ```
-    - Go to: Tools/Board/Board Manager/ and Filter search by ESP32 to install boards:
-    ```
-    ESP32 install
-    ```
+    - Go to: Tools/Board/Board Manager/ and Filter search by ESP32 to install boards
     - espressif/arduino-esp32 libraries:
     ```
     BluetoothSerial.h
