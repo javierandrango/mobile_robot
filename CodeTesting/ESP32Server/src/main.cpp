@@ -1,41 +1,92 @@
 #include <Arduino.h>
-// variable declaration
-//-------------------------------------------------------------------
+#include <WiFi.h>
+#include "ESPAsyncWebServer.h"
+
+/*variable declaration*/
+/*-------------------------------------------------------------------*/
+//Build-in led
 int interval_time = 1000;// miliseconds
 unsigned long current_time = 0;
 unsigned long previous_time = 0;
 bool led_state = LOW;
-//-------------------------------------------------------------------
+
+//Web server credentials
+const char* ssid = "CELERITY_ANDRANGO";
+const char* password = "091992javier";
+AsyncWebServer server(80);
+const char* PARAM_MESSAGE = "message";
+/*-------------------------------------------------------------------*/
 
 
-// put function declarations here:
-//-------------------------------------------------------------------
-void blinkLed(int);
-//-------------------------------------------------------------------
+/*put function declarations here:*/
+/*-------------------------------------------------------------------*/
+//blink led
+//void blinkLed(int);
+
+//HTML request
+void notFound(AsyncWebServerRequest *request);
+
+/*-------------------------------------------------------------------*/
 
 
 
-// put your setup code here, to run once:
-//-------------------------------------------------------------------
+/*put your setup code here, to run once:*/
+/*-------------------------------------------------------------------*/
 void setup() {
-  
-  pinMode(LED_BUILTIN,OUTPUT);
+  //Serial communication
+  Serial.begin(115200);
+
+  //Build-in led
+  //pinMode(LED_BUILTIN,OUTPUT);
+
+  //Web server as Station mode:
+  //we can  request information from the internet 
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid,password);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.printf("WiFi Failed!\n");
+    return;
+  }
+  else{
+    Serial.print("WiFi connected succesfully!");
+  }
+
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+  //server request: main page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "Hello, world");
+  });
+  // Send a GET request to <IP>/get?message=<message>
+    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+        String message;
+        if (request->hasParam(PARAM_MESSAGE)) {
+            message = request->getParam(PARAM_MESSAGE)->value();
+        } else {
+            message = "No message sent";
+        }
+        request->send(200, "text/plain", "Hello, GET: " + message);
+    });
+  //server request: page not found
+  server.onNotFound(notFound);
+  server.begin();
 }
-//-------------------------------------------------------------------
+/*-------------------------------------------------------------------*/
 
 
 
-// put your main code here, to run repeatedly:
-//-------------------------------------------------------------------
+/*put your main code here, to run repeatedly:*/
+/*-------------------------------------------------------------------*/
 void loop() {
-  blinkLed(interval_time);
+  //blinkLed(interval_time);
 }
-//-------------------------------------------------------------------
+/*-------------------------------------------------------------------*/
 
 
 
-// put function definitions here:
-//-------------------------------------------------------------------
+/*put function definitions here:*/
+/*-------------------------------------------------------------------*/
+// blik led 
 void blinkLed(int time_ms){
   /**
    * n: number of times the led will blink
@@ -54,7 +105,11 @@ void blinkLed(int time_ms){
     previous_time = current_time;
   }
   digitalWrite(BUILTIN_LED, led_state);
-
-
 }
-//-------------------------------------------------------------------
+
+// html not found 
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
+
+/*-------------------------------------------------------------------*/
