@@ -8,7 +8,7 @@
    https://github.com/lorol/arduino-esp32littlefs-plugin */
    
 #define FORMAT_LITTLEFS_IF_FAILED true
-
+/*
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\r\n", dirname);
 
@@ -252,6 +252,7 @@ void testFileIO(fs::FS &fs, const char * path){
         Serial.println("- failed to open file for reading");
     }
 }
+*/
 
 void setup(){
     Serial.begin(115200);
@@ -259,38 +260,39 @@ void setup(){
         Serial.println("LITTLEFS Mount Failed");
         return;
     }
-  Serial.println("\nTest 1:==================================================\n"); 
-  // create directory and subdirectories
-  listDir(LITTLEFS, "/", 0);
-	createDir(LITTLEFS, "/mydir");
-	writeFile(LITTLEFS, "/mydir/hello2.txt", "Hello2");
-  writeFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt", "Hello3");
-	listDir(LITTLEFS, "/", 3);
-	deleteFile(LITTLEFS, "/mydir/hello2.txt");
-  deleteFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt");
-	removeDir(LITTLEFS, "/mydir");
-  Serial.println("\n=========================================================\n");
-  
-  Serial.println("\nTest 2:==================================================\n");
-  // create a file
-  listDir(LITTLEFS, "/", 3);
-  writeFile(LITTLEFS, "/hello.txt", "Hello ");
-  appendFile(LITTLEFS, "/hello.txt", "World!\r\n");
-  readFile(LITTLEFS, "/hello.txt");
-  renameFile(LITTLEFS, "/hello.txt", "/foo.txt");
-  readFile(LITTLEFS, "/foo.txt");
-  deleteFile(LITTLEFS, "/foo.txt");
-  testFileIO(LITTLEFS, "/test.txt");
-  deleteFile(LITTLEFS, "/test.txt");
-  Serial.println("\n=========================================================\n");
-  
-  Serial.println("\nTest 3:==================================================\n");
-  // read actual content in txt files:
-  readFile(LITTLEFS, "/test1.txt");
-  readFile(LITTLEFS, "/testfolder/test2.txt");
-  Serial.println("\n=========================================================\n");
-  
-  Serial.println( "Test complete" );
+    /*
+    Serial.println("\nTest 1:==================================================\n"); 
+    // create directory and subdirectories
+    listDir(LITTLEFS, "/", 0);
+    createDir(LITTLEFS, "/mydir");
+    writeFile(LITTLEFS, "/mydir/hello2.txt", "Hello2");
+    writeFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt", "Hello3");
+    listDir(LITTLEFS, "/", 3);
+    deleteFile(LITTLEFS, "/mydir/hello2.txt");
+    deleteFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt");
+    removeDir(LITTLEFS, "/mydir");
+    Serial.println("\n=========================================================\n");
+
+    Serial.println("\nTest 2:==================================================\n");
+    // create a file
+    listDir(LITTLEFS, "/", 3);
+    writeFile(LITTLEFS, "/hello.txt", "Hello ");
+    appendFile(LITTLEFS, "/hello.txt", "World!\r\n");
+    readFile(LITTLEFS, "/hello.txt");
+    renameFile(LITTLEFS, "/hello.txt", "/foo.txt");
+    readFile(LITTLEFS, "/foo.txt");
+    deleteFile(LITTLEFS, "/foo.txt");
+    testFileIO(LITTLEFS, "/test.txt");
+    deleteFile(LITTLEFS, "/test.txt");
+    Serial.println("\n=========================================================\n");
+
+    Serial.println("\nTest 3:==================================================\n");
+    // read actual content in txt files:
+    readFile(LITTLEFS, "/test1.txt");
+    readFile(LITTLEFS, "/testfolder/test2.txt");
+    Serial.println("\n=========================================================\n");
+    */
+    Serial.println( "Test complete" );
 }
 
 void loop(){

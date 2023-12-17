@@ -1,9 +1,12 @@
 #include <Arduino.h>
+#include <FS.h>
+#include <LittleFS.h>
 #include <WiFi.h>
-#include "ESPAsyncWebServer.h"
+#include <ESPAsyncWebServer.h>
 
 /*variable declaration*/
 /*-------------------------------------------------------------------*/
+
 //Build-in led
 int interval_time = 1000;// miliseconds
 unsigned long current_time = 0;
@@ -15,6 +18,10 @@ const char* ssid = "CELERITY_ANDRANGO";
 const char* password = "091992javier";
 AsyncWebServer server(80);
 const char* PARAM_MESSAGE = "message";
+
+//LittleFs filesystem
+#define FORMAT_LITTLEFS_IF_FAILED true
+
 /*-------------------------------------------------------------------*/
 
 
@@ -39,6 +46,7 @@ void setup() {
   //Build-in led
   //pinMode(LED_BUILTIN,OUTPUT);
 
+  
   //Web server as Station mode:
   //we can  request information from the internet 
   WiFi.mode(WIFI_STA);
@@ -50,13 +58,27 @@ void setup() {
   else{
     Serial.print("WiFi connected succesfully!");
   }
+  
+  // Mount SPIFFS file system
+  if(!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
+      Serial.println("LITTLEFS Mount Failed");
+      return;
+  }
 
+  
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
-  //server request: main page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(200, "text/plain", "Hello, world");
+  
+
+  
+  // server request: main page
+  server.serveStatic("/static/css/style.css", LITTLEFS, "/static/css/style.css");
+  server.serveStatic("/static/js/main.js", LITTLEFS, "/static/js/main.js");
+  server.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
+        request->send(LITTLEFS,"/index.html","text/html", false);
   });
+  
+
   // Send a GET request to <IP>/get?message=<message>
     server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
         String message;
@@ -67,9 +89,11 @@ void setup() {
         }
         request->send(200, "text/plain", "Hello, GET: " + message);
     });
+  
   //server request: page not found
   server.onNotFound(notFound);
   server.begin();
+  
 }
 /*-------------------------------------------------------------------*/
 
