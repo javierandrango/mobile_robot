@@ -1,5 +1,4 @@
 # information and resources tested while the final code was developing
 *.txt
 /mobileRobotV1/esp32-tests-blik-led
-/mobileRobotV1/
 /mobileRobotV1-files/ 
