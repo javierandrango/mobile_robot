@@ -55,7 +55,7 @@ table{
 }
 #buttonsContainer{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 #statusContainer{
