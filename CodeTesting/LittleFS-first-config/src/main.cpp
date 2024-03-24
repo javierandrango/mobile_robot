@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "FS.h"
+#include <FS.h>
 #include <LittleFS.h>
 #include <time.h>
 
@@ -8,7 +8,7 @@
    https://github.com/lorol/arduino-esp32littlefs-plugin */
    
 #define FORMAT_LITTLEFS_IF_FAILED true
-/*
+
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\r\n", dirname);
 
@@ -27,6 +27,7 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
         if(file.isDirectory()){
             Serial.print("  DIR : ");
 
+
 #ifdef CONFIG_LITTLEFS_FOR_IDF_3_2
             Serial.println(file.name());
 #else
@@ -37,7 +38,9 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 #endif
 
             if(levels){
-                listDir(fs, file.name(), levels -1);
+                listDir(fs, file.path(), levels -1);  
+                //String nextDir = String(dirname) + "/" + file.name();
+                //listDir(fs, nextDir.c_str(), levels - 1);
             }
         } else {
             Serial.print("  FILE: ");
@@ -47,7 +50,7 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 #ifdef CONFIG_LITTLEFS_FOR_IDF_3_2
             Serial.println(file.size());
 #else
-            Serial.print(file.size());
+            Serial.print(file.size()); 
             time_t t= file.getLastWrite();
             struct tm * tmstruct = localtime(&t);
             Serial.printf("  LAST WRITE: %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct->tm_year)+1900,( tmstruct->tm_mon)+1, tmstruct->tm_mday,tmstruct->tm_hour , tmstruct->tm_min, tmstruct->tm_sec);
@@ -252,7 +255,7 @@ void testFileIO(fs::FS &fs, const char * path){
         Serial.println("- failed to open file for reading");
     }
 }
-*/
+
 
 void setup(){
     Serial.begin(115200);
@@ -260,39 +263,76 @@ void setup(){
         Serial.println("LITTLEFS Mount Failed");
         return;
     }
-    /*
+    
     Serial.println("\nTest 1:==================================================\n"); 
-    // create directory and subdirectories
-    listDir(LITTLEFS, "/", 0);
+    Serial.println("create files into a directory and subdirectories...");
+    // shows all directories and files if any exist
+    listDir(LITTLEFS, "/", 3);
+    Serial.println("");
+    // create files into a directory and subdirectories
     createDir(LITTLEFS, "/mydir");
     writeFile(LITTLEFS, "/mydir/hello2.txt", "Hello2");
+    createDir(LITTLEFS, "/mydir/newdir2/newdir3/");
     writeFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt", "Hello3");
+    Serial.println("");
+    // shows all directories previously created
     listDir(LITTLEFS, "/", 3);
+    Serial.println("");
+    // delete all files and directories previously created
+    Serial.println("delete all files and directories previously created...");
     deleteFile(LITTLEFS, "/mydir/hello2.txt");
     deleteFile2(LITTLEFS, "/mydir/newdir2/newdir3/hello3.txt");
     removeDir(LITTLEFS, "/mydir");
-    Serial.println("\n=========================================================\n");
-
-    Serial.println("\nTest 2:==================================================\n");
-    // create a file
+    // shows the actual directory
     listDir(LITTLEFS, "/", 3);
+    Serial.println("\n=========================================================\n");
+    
+    Serial.println("\nTest 2:==================================================\n");
+    
+    // create a txt file and add content
+    Serial.println("create a txt file and add content...");
     writeFile(LITTLEFS, "/hello.txt", "Hello ");
     appendFile(LITTLEFS, "/hello.txt", "World!\r\n");
     readFile(LITTLEFS, "/hello.txt");
+    // rename the previous file
+    Serial.println("\nrename the previous file...");
     renameFile(LITTLEFS, "/hello.txt", "/foo.txt");
     readFile(LITTLEFS, "/foo.txt");
     deleteFile(LITTLEFS, "/foo.txt");
+    
+    // how long it takes to read the content in a file
+    // the file test.txt is available in the data folder 
+    // from the project repository
+    Serial.println("\nHow long it take to read the content on a file...");
     testFileIO(LITTLEFS, "/test.txt");
     deleteFile(LITTLEFS, "/test.txt");
     Serial.println("\n=========================================================\n");
 
+
     Serial.println("\nTest 3:==================================================\n");
-    // read actual content in txt files:
-    readFile(LITTLEFS, "/test1.txt");
-    readFile(LITTLEFS, "/testfolder/test2.txt");
+    // Upload a file and read content:
+    Serial.println("read content of a uploaded file...");
+    File file = LITTLEFS.open("/testfolder/test2.txt");
+    if(!file){
+        Serial.println("Failed to open file for reading");
+        Serial.println("Upload the file to the filesystem:");
+        Serial.println("Platform > Upload Filesystem");
+        return;
+    } 
+    Serial.println("File Content:");
+    while(file.available()){
+        Serial.write(file.read());
+    }
+    file.close();
+    // delete all files and directories previously created
+    Serial.println("\n");
+    deleteFile2(LITTLEFS, "/testfolder/test2.txt");
+    // shows the actual directory
+    listDir(LITTLEFS, "/", 2);
     Serial.println("\n=========================================================\n");
-    */
+    
     Serial.println( "Test complete" );
+    
 }
 
 void loop(){
