@@ -158,6 +158,8 @@ void notFound(AsyncWebServerRequest *request) {
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
+    // marks the end of the string allowing 
+    // functions to determine where the string data stops.
     data[len] = 0;
     // return 0 if data comparison is equal
     if (strcmp((char*)data, "ON") == 0) {
@@ -173,12 +175,15 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
              void *arg, uint8_t *data, size_t len) {
   switch (type) {
+    //client connected
     case WS_EVT_CONNECT:
       Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
       break;
+    //client disconnected
     case WS_EVT_DISCONNECT:
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
       break;
+    //data packet
     case WS_EVT_DATA:
       handleWebSocketMessage(arg, data, len);
       break;

@@ -82,7 +82,6 @@ function sendData(data){
     //more info: developer.mozilla.org
     if(websocket.readyState === WebSocket.OPEN){
         websocket.send(data);
-        console.log("data send to ESP32");
     }
     else{
         console.log("WebSocket connection is not open");
