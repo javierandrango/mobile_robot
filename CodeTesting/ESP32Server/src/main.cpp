@@ -8,12 +8,6 @@
 /*-------------------------------------------------------------------*/
 
 //Build-in led
-/*
-int interval_time = 1000;// miliseconds
-unsigned long current_time = 0;
-unsigned long previous_time = 0;
-bool led_state = LOW;
-*/
 bool ledState = LOW;
 
 //Web server credentials
@@ -33,9 +27,6 @@ AsyncWebSocket ws("/ws");
 
 /*put function declarations here:*/
 /*-------------------------------------------------------------------*/
-//blink led
-//void blinkLed(int);
-
 // HTML request
 void notFound(AsyncWebServerRequest *request);
 // message received from webSocket
@@ -75,12 +66,11 @@ void setup() {
       return;
   }
 
-  
+  // shows web page IP
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
   
 
-  
   // server request: main page
   server.serveStatic("/static/css/style.css", LITTLEFS, "/static/css/style.css");
   server.serveStatic("/static/js/main.js", LITTLEFS, "/static/js/main.js");
@@ -88,19 +78,6 @@ void setup() {
         request->send(LITTLEFS,"/index.html","text/html", false);
   });
   
-  /*
-  // Send a GET request to <IP>/get?message=<message>
-    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-        String message;
-        if (request->hasParam(PARAM_MESSAGE)) {
-            message = request->getParam(PARAM_MESSAGE)->value();
-        } else {
-            message = "No message sent";
-        }
-        request->send(200, "text/plain", "Hello, GET: " + message);
-    });
-  */
-
   // initialize webSocket
   ws.onEvent(onEvent);
   server.addHandler(&ws);
@@ -127,34 +104,12 @@ void loop() {
 
 /*put function definitions here:*/
 /*-------------------------------------------------------------------*/
-// blik led 
-
-//void blinkLed(int time_ms){
-//  /**
-//   * n: number of times the led will blink
-//   * time_ms: time perior between blinks
-//  */
-//  current_time = millis();
-//  if (current_time - previous_time>=time_ms){
-//    //change state
-//    if (led_state == LOW){
-//      led_state = HIGH;
-//    }
-//    else{
-//      led_state = LOW;
-//    }
-//    //update time
-//    previous_time = current_time;
-//  }
-//  digitalWrite(BUILTIN_LED, led_state);
-//}
-
 // html not found 
 void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
 }
 
-// message received from webSocket
+// message received from client
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
@@ -168,6 +123,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     else if (strcmp((char*)data, "OFF") == 0){
       ledState = LOW;
     }
+    //send message to all client
+    ws.textAll(String(ledState));
   }
 }
 

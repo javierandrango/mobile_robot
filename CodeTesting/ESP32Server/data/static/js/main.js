@@ -3,11 +3,11 @@
  * ---------------------------------------------------------------------
  */
 //HTML
-let toggle = document.getElementById("toggleButton");
-let esp32LedStatus = document.getElementById("ESP32Led");
+var toggle = document.getElementById("toggleButton");
+var esp32LedStatus = document.getElementById("ESP32Led");
 //web socket URL
 var websocket;
-let gateway = `ws://${window.location.hostname}/ws`;
+var gateway = `ws://${window.location.hostname}/ws`;
 //----------------------------------------------------------------------
 
 
@@ -25,14 +25,14 @@ if (toggle){
             toggle.classList.add("btn-success");
             //change led status name
             toggle.innerHTML = "LED ON"
-            //esp32LedStatus.value = "ON"
+            
             ledState = "ON"
         }
         else{
             toggle.classList.remove("btn-success");
             toggle.classList.add("btn-secondary");
             toggle.innerHTML = "LED OFF"
-            //esp32LedStatus.value = "OFF"
+    
             ledState = "OFF"
         }
         sendData(ledState);
@@ -74,6 +74,30 @@ function createWebSocket(){
         console.log("webSocket connection closed");
         setTimeout(createWebSocket,2000);    
     });
+
+    //received message from server
+    websocket.addEventListener("message",(event)=>{
+        if(event.data === '1'){
+            //change client status
+            esp32LedStatus.value = "ON";
+            //change client button color
+            toggle.classList.remove("btn-secondary");
+            toggle.classList.add("btn-success");
+            toggle.innerHTML = "LED ON"
+
+        }
+        else if(event.data === '0'){
+            //change client status
+            esp32LedStatus.value = "OFF";
+            //change client button color
+            toggle.classList.remove("btn-success");
+            toggle.classList.add("btn-secondary");
+            toggle.innerHTML = "LED OFF"
+        }
+        else{
+            esp32LedStatus.value = " ";
+        }
+    })
 }
 
 
@@ -87,6 +111,5 @@ function sendData(data){
         console.log("WebSocket connection is not open");
     }
 }
-
 
 //----------------------------------------------------------------------
