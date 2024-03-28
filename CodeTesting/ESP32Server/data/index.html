@@ -28,11 +28,11 @@
             </div>
             <table class="card-body">
                 <tr id="buttonsContainer">
-                    <td ><button class="ledButton btn btn-secondary" id="toggleButton" type="button">LED OFF</button></td>
+                    <td ><button class="ledButton btn btn-secondary" id="toggleButton" type="button">LED %STATE%</button></td>
                 </tr>
                 <tr id="statusContainer">
                     <td><label for="ESP32Led">LED Status Response:</label></td>
-                    <td><input type="text" name="ledStatus" id="ESP32Led" disabled value="OFF"></td>
+                    <td><input type="text" name="ledStatus" id="ESP32Led" disabled value="%STATE%"></td>
                 </tr>
             </table>
         </section>

@@ -41,6 +41,14 @@ if (toggle){
 
 
 window.addEventListener("load",()=>{
+    if(toggle.innerHTML === "LED ON"){
+        toggle.classList.remove("btn-secondary");
+        toggle.classList.add("btn-success");
+    }
+    else{
+        toggle.classList.remove("btn-success");
+        toggle.classList.add("btn-secondary");
+    }
     createWebSocket();
 });
 //----------------------------------------------------------------------

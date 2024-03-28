@@ -34,6 +34,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len);
 // webSocket event
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
              void *arg, uint8_t *data, size_t len);
+// HTML placeholder
+String processor(const String& var);
 /*-------------------------------------------------------------------*/
 
 
@@ -62,8 +64,8 @@ void setup() {
   
   // Mount SPIFFS file system
   if(!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
-      Serial.println("LITTLEFS Mount Failed");
-      return;
+    Serial.println("LITTLEFS Mount Failed");
+    return;
   }
 
   // shows web page IP
@@ -74,10 +76,15 @@ void setup() {
   // server request: main page
   server.serveStatic("/static/css/style.css", LITTLEFS, "/static/css/style.css");
   server.serveStatic("/static/js/main.js", LITTLEFS, "/static/js/main.js");
-  server.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
-        request->send(LITTLEFS,"/index.html","text/html", false);
-  });
+  //server.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
+  //      request->send(LITTLEFS,"/index.html","text/html", false);
+  //});
   
+  // server request: update HTML before shows to clients, replace placeholders
+  server.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
+    request->send(LITTLEFS, "/index.html", String(), false, processor);
+  });
+
   // initialize webSocket
   ws.onEvent(onEvent);
   server.addHandler(&ws);
@@ -123,7 +130,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     else if (strcmp((char*)data, "OFF") == 0){
       ledState = LOW;
     }
-    //send message to all client
+    //send message to all CONNECTED clients
     ws.textAll(String(ledState));
   }
 }
@@ -150,5 +157,18 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
   }
 }
 
+// HTML placeholder
+String processor(const String& var){
+  Serial.println(var);
+  if(var == "STATE"){
+    if (ledState){
+      return "ON";
+    }
+    else{
+      return "OFF";
+    }
+  }
+  return String();
+}
 
 /*-------------------------------------------------------------------*/
