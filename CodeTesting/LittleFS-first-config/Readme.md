@@ -7,7 +7,7 @@ LittleFS is a lightweight filesystem created for microcontrollers that lets you 
 2. The project structure, directories, packages, and code were distributed using `Platformio IDE extension` configuration to work with `VScode`. An installation tutorial can be found [here](https://randomnerdtutorials.com/vs-code-platformio-ide-esp32-esp8266-arduino/)
 
 # Usage
-1. open file in directory and change code in explained in `Notes` section:
+1. open the file in the directory and change the code in explained in `Notes` section:
 ```
 .pio > libdeps > esp32doit-devkit-v1 > LittleFS_esp32 > LITTLEFS.cpp
 ```
@@ -20,7 +20,7 @@ PlatformIO > Platform > Upload Filesystem
 ```
 PlatformIO > General > Upload and Monitor
 ```
-4. Once the test was completed, Press `CTRL + C` to exit monitor
+4. Once the test is completed, Press `CTRL + C` to exit the monitor
 
 # Notes
 > [!NOTE]
@@ -43,6 +43,8 @@ bool LITTLEFSImpl::exists(const char* path)
 }
 ```
 # Results:
-![Alt text](/images/littlefs1.png)
-![Alt text](/images/littlefs2.png)
-![Alt text](/images/littlefs3.png)
+<img src="https://github.com/javierandrango/mobile_robot/blob/main/images/littlefs1.png" width="50%">
+<img src="https://github.com/javierandrango/mobile_robot/blob/main/images/littlefs2.png" width="50%">
+<img src="https://github.com/javierandrango/mobile_robot/blob/main/images/littlefs3.png" width="50%">
+
+
