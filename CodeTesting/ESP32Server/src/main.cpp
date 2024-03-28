@@ -3,6 +3,7 @@
 #include <LittleFS.h>
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
+#include <secrets.h>//wifi credentials
 
 /*variable declaration*/
 /*-------------------------------------------------------------------*/
@@ -11,8 +12,8 @@
 bool ledState = LOW;
 
 //Web server credentials
-const char* ssid = "CELERITY_FLIA_ANDRANGO";
-const char* password = "091992javier";
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
 AsyncWebServer server(80);
 //const char* PARAM_MESSAGE = "message";
 
