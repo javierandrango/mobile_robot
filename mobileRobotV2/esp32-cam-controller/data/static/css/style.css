@@ -1,0 +1,288 @@
+/*
+* stream jpeg images
+*/
+body{
+    font-family:'Arial Narrow Bold', sans-serif;
+}
+section{
+    /*delete default space in the tag*/
+    margin: 0;
+    position: relative;
+}
+#main-container{
+    /*stream container in the middle of the screen*/
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+#stream-container{
+    position: absolute;
+    top:4em;
+    background-color: rgb(79, 77, 77);
+    width: calc(100vw - 80px);
+    height: calc(0.70*(100vw - 80px));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#stream{
+    /*image fits into the container*/
+    max-width: 100%;
+    max-height: 100%;
+}
+#navbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 10px 0px 10px;
+    position: absolute;
+    top:10px;
+    z-index: 1;
+}
+#control-button-container{
+    position: absolute;
+    top:0px;
+    left:50%;
+    transform:translateX(-50%);
+}
+.action-control{
+    border: solid red 2px;
+    border-radius: 22px;
+    background-color: transparent;
+    color: black;
+    height: 44px;
+    width: 44px;
+    margin: 0px 5px 0px 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}   
+#btn-menu,#btn-screen,#btn-close{
+    border: none;
+    background-color: transparent;
+}
+#loading-container{
+    position: absolute;
+    top: 4.5em;
+    z-index: 1;
+    color: white;
+}
+/*
+* camera menu options
+*/
+.input-group{
+    padding: 4px 0px 4px 0px;
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#menu-opt-container > #menu-opt-list> .input-group > label{
+    width:110px;
+}
+#framesize,#special_effect{
+    margin:10px 0px 5px 0px;
+}
+#menu-opt-container{
+    /*container position*/
+    position: absolute;
+    top:80px;
+    width:200px;
+    
+    /*center container*/
+    left: 50%;
+    transform: translateX(-50%);
+    /*style container*/
+    border: solid 1px gray;
+    background: rgba(128,128,128,.2);
+    color:black;
+    border-radius: 20px;
+    padding: 10px 15px 10px 15px;
+    z-index: 1;
+}
+#menu-opt-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: solid 1px gray;
+}
+#menu-opt-header>h3{
+    margin: 8px 0px;
+}
+#framesize,#special_effect,.slider-container{
+    height: 35px;
+    width: 180px;
+}
+#framesize,#special_effect,#hmirror,#vflip{
+    background:white;
+    border: none;
+}
+/*check buttons as switch style*/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 70px;
+    height: 30px;
+    margin: 5px 0px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: grey;
+    transition: 0.4s;
+    border-radius: 22px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #0d6efd;
+}
+input:checked + .slider:before {
+    transform: translateX(38px);
+}
+.slider-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#btn-close{
+    position: relative;
+    bottom: 5px;
+    left: 0px;
+}
+#set-xclk{
+    position:relative;
+    left: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0d6efd;
+    color: white;
+}
+#xclk-value,#set-xclk{
+    width: 60px;
+    height: 30px;
+    margin: 5px 0px;
+    border-radius:20px;
+    border:none;
+    text-align: center;
+}
+/*arrow icon and left border on select options*/
+#framesize,#special_effect{
+    border-radius: 20px;
+    padding-left: 8px;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+    appearance:none;
+    background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+    background-position:
+    calc(100% - 20px) calc(1em + 0px),
+    calc(100% - 15px) calc(1em + 0px),
+    calc(100% - 2.2em) 0.3em;
+    background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+    background-repeat: no-repeat;
+}
+
+@media screen and (min-width:340px){
+    .input-group{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 40px;
+    }
+    #menu-opt-container{
+        width:305px;
+    }    
+}
+@media only screen and (max-height:430px) and (orientation:landscape){
+    #stream-container{
+        width: calc(100vh - 50px);
+        height: calc(0.70*(100vh - 50px));
+    }
+    #stream{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #menu-opt-list{
+        height: calc(0.4*100vh);
+        overflow-y:scroll;
+    }
+    #menu-opt-container{
+        width:360px;
+        height: auto;
+    }
+}
+@media only screen and (min-height:431px) and (max-height:800px) and (orientation:landscape){
+    #stream-container{
+        width: calc(100vh - 82px);
+        height: calc(0.70*(100vh - 82px));
+    }
+    #stream{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #menu-opt-list{
+        height: calc(0.55*100vh);
+        overflow-y:scroll;
+    }
+    #menu-opt-container{
+        width:360px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media only screen and (min-height:801px){
+    #stream-container{
+        width: calc(100vh - 94px);
+        height: calc(0.70*(100vh - 94px));
+    }
+    #stream{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #menu-opt-container{
+        width:360px;
+    }
+}
+@media (orientation: portrait){
+    #main-container{
+        align-items:center;
+    }
+    #stream-container{
+        width: calc(100vw - 80px);
+        height: calc(0.70*(100vw - 80px));
+    }
+    #stream{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
