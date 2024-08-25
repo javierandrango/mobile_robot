@@ -3,6 +3,7 @@
 */
 body{
     font-family:'Arial Narrow Bold', sans-serif;
+    overflow-x: hidden;
 }
 section{
     /*delete default space in the tag*/
@@ -12,15 +13,25 @@ section{
 #main-container{
     /*stream container in the middle of the screen*/
     height: 100vh;
-    display: flex;
-    justify-content: center;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 #stream-container{
-    position: absolute;
+    position: relative;
     top:4em;
+    margin-bottom: 5px;
     background-color: rgb(79, 77, 77);
-    width: calc(100vw - 80px);
-    height: calc(0.70*(100vw - 80px));
+    
+    /*
+    width: 90%;
+    height: calc(0.6*(100vw));
+    */
+
+    /*aspect ratio 16:9*/
+    width: calc(95vw);
+    height: calc(95vw * tan(29.36deg));
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,7 +64,7 @@ section{
     color: black;
     height: 44px;
     width: 44px;
-    margin: 0px 5px 0px 5px;
+    margin: 0px 3px 0px 3px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -64,7 +75,7 @@ section{
 }
 #loading-container{
     position: absolute;
-    top: 4.5em;
+    top: 6em;
     z-index: 1;
     color: white;
 }
@@ -94,7 +105,7 @@ section{
     transform: translateX(-50%);
     /*style container*/
     border: solid 1px gray;
-    background: rgba(128,128,128,.2);
+    background: rgba(128,128,128,.3);
     color:black;
     border-radius: 20px;
     padding: 10px 15px 10px 15px;
@@ -109,6 +120,9 @@ section{
 }
 #menu-opt-header>h3{
     margin: 8px 0px;
+}
+#menu-opt-header>button{
+    padding-top: 10px;
 }
 #framesize,#special_effect,.slider-container{
     height: 35px;
@@ -206,7 +220,335 @@ input:checked + .slider:before {
     1px 1.5em;
     background-repeat: no-repeat;
 }
+/*
+* controller
+*/
+#controller-container{
+    /*background-color: yellow;*/
+    position: relative;
+    top:4em;
 
+    width: 90%;
+    /*height: calc(0.7*(100vw));*/
+    
+    /*initially hide the container*/
+    display:none;
+    /*when the container is shown controlled with a button*/
+    flex-direction: column;
+    align-items: center;
+}
+#controller-msg{
+    display:flex;
+    margin: 8px 0px 8px 0px;
+}
+.encoded-data{
+    border: solid 2px rgba(128,128,128,.2);
+    border-radius: 17px;
+    padding: 0px 5px 0px 5px;
+}
+#joystick-data{
+    position:absolute;
+    top:0.4em;
+    left:0em;
+    width:62px;
+}
+#buttons-data{
+    position:absolute;
+    top:0.4em;
+    right:0em;
+    width:62px;
+    
+    display: flex;
+    justify-content: center;
+}
+.carousel{
+    display: flex;
+    padding: 0;
+    margin: 10px 0px 2px 0px;
+    /*scroll in x direction*/
+    list-style-type: none;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    /*hide scrollbar*/
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /*disable touch event*/
+    touch-action: none;
+}
+/*square caruosel*/
+.carousel{
+    width: 70%;
+    border-left: solid 2px rgba(128,128,128,.2);
+    border-right: solid 2px rgba(128,128,128,.2);
+    border-radius: 22px;
+}
+.carousel:after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+/* Hide scrollbar in webkit */
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+.carousel-item{
+    background-color: white;
+    flex-shrink: 0;
+    width: 100%;
+    scroll-snap-align: center;
+}
+.carousel-state{
+    position: absolute;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 25px;
+    
+    border: none;
+    border-radius: 22px;
+    background: rgba(128,128,128, 0.1);
+}
+#carousel-previous{
+    left: -0.4rem;
+    color: rgba(128,128,128, 0.2);
+}
+#carousel-next{
+    right: -0.4rem;
+}
+#controller-joystick,#controller-buttons{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media only screen and (min-width:315px) and (max-width:359px){
+    /*camera menu*/
+    .input-group{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 40px;
+    }
+    #menu-opt-container{
+        width:280px;
+        height: auto;
+    }
+}
+
+@media only screen and (min-width:360px){
+    /*camera menu*/
+    .input-group{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 40px;
+    }
+    #menu-opt-container{
+        width:320px;
+        padding: 0px 10px 0px 10px;
+    }
+    
+}
+@media screen and (min-width:480px){
+    /*extended controller*/
+    #controller-container{
+        /*height: calc(0.45*(100vw));*/
+        padding-bottom: 5px;
+    }
+    .carousel-state{
+        display:none;
+    }
+    #controller-joystick{
+        background-color: rgb(255, 192, 203);
+    }
+    #controller-buttons{
+        background-color: rgb(0,255,255);
+    }
+    .carousel{
+        display:flex;
+        width: 100%;
+        height: 100%;
+        overflow-x:hidden;
+        scroll-snap-type:none;
+        touch-action: auto
+    }
+    .carousel:after{
+        content: "";
+        padding-bottom: 0%;
+    }
+    .carousel-item {
+        flex-shrink:unset;
+        scroll-snap-align:unset;
+    }
+}
+@media only screen and (min-height:480px) and (max-height:640px){
+    /*overflow menu in y direction*/
+    #menu-opt-list{
+        height: calc(0.6*100vh);
+        overflow-y:scroll;
+    }
+    #menu-opt-container{
+        height: auto;
+    }
+}
+@media only screen and (min-height:641px){
+    /*body{
+        overflow-y: hidden;
+    }*/
+    /*stream*/
+    #stream-container{
+        margin-bottom: 2em;
+    }
+    /*shows menu in the entire screen*/
+    #menu-opt-list{
+        height: auto;
+        overflow-y:hidden;
+    }
+    #menu-opt-container{
+        height: auto;
+    }
+    /*controller*/
+    #controller-container{
+        /*height: calc(0.95*(100vw));*/
+    }
+    .encoded-data{
+        padding: 5px 5px 5px 5px;
+    }
+    #joystick-data,#buttons-data{
+        top:0.1em;
+    }
+    #controller-msg{
+        display: block;
+    }
+    /*square caruosel*/
+    .carousel{
+        margin-top: 10px;
+        width: 80%;
+        height: 320px;
+    }
+    .carousel-state{
+        top:50%;
+    }
+    #carousel-previous{
+        left: -1.2rem;
+    }
+    #carousel-next{
+        right: -1.2rem;
+    }
+}
+@media only screen and (min-width:480px) and (min-height:641px){
+    .carousel{
+        width:100%;
+    }
+}
+@media only screen and (orientation: landscape){
+    /*camera menu position*/
+    #menu-opt-container{
+        top:65px;
+    }
+    /*overflow menu in y direction*/
+    #menu-opt-list{
+        height: calc(100vh - 200px);
+        overflow-y:scroll;
+    }
+    #stream-container{
+        z-index:0;
+        /*
+        width: calc(100vh - 50px);
+        height: calc(0.70*(100vh - 50px));
+        */
+        width: calc(60vw);
+        height: calc(60vw * tan(29.36deg));
+    }
+    #stream{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #controller-container{
+        position:absolute;
+        top:0em;
+        z-index: 1;
+        width: 98vw;
+        /*height: 92vh;*/
+    }
+    .carousel-item{
+        background-color: transparent;
+    }
+    #controller-joystick{
+        background-color: rgb(255, 192, 203,0.4);
+    }
+    #controller-buttons{
+        background-color: rgb(0,255,255,0.4);
+    }
+    #navbar{
+        z-index:3;
+    }
+    #controller-msg{
+        display: none;
+    }
+    #joystick-data{
+        top:1.5em;
+        left:15%;
+    }
+    #buttons-data{
+        top:1.5em;
+        right:15%;
+    }
+}
+@media only screen and (max-height:639px) and (orientation: landscape){
+    #controller-container{
+        height: 92vh;
+    }
+}
+@media only screen and (min-height:640px) and (orientation: landscape){
+    /*overflow menu in y direction*/
+    #menu-opt-list{
+        height: auto;
+        overflow-y:hidden;
+    } 
+    #stream-container{
+        position: relative;
+        top:4em;
+        margin-bottom: 5px;
+        /*
+        width: 40%;
+        height: calc((0.88 * 100vh) - 320px);
+        */
+        width: calc(45vw);
+        height: calc(45vw * tan(29.36deg));
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #controller-container{
+        position:relative;
+        top:4em;
+    }
+    .carousel{
+        height: 320px;
+    }
+    #controller-msg{
+        position:relative;
+        display: block;
+    }
+    #joystick-data{
+        top:0em;
+        left:15%;
+    }
+    #buttons-data{
+        top:0em;
+        right:15%;
+    }
+
+}
+
+
+
+/*
 @media screen and (min-width:340px){
     .input-group{
         display: flex;
@@ -286,3 +628,4 @@ input:checked + .slider:before {
         object-fit: cover;
     }
 }
+*/

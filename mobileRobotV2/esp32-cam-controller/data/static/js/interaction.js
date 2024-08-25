@@ -14,6 +14,9 @@ const btnFullScreenContainer = document.getElementById('fs-button-container');
 const btnMenu = document.getElementById('btn-menu');
 const btnClose = document.getElementById('btn-close');
 const btnXclk = document.getElementById('set-xclk');
+const btnControl = document.getElementById('btn-control');
+const controlStatus = document.getElementById('control-status');
+const btnCamera = document.getElementById('btn-camera');
 // loading message
 var loadingMsg = document.getElementById('loading-container');
 // full screen 
@@ -32,11 +35,13 @@ const saturationInput = document.getElementById('saturation');
 const saturationValue = document.getElementById('saturation-value');
 const ledIntensity = document.getElementById('led_intensity');
 const ledValue = document.getElementById('led-value');
-
+//controller 
+const controllerContainer = document.getElementById('controller-container');
+const btnPrevious = document.getElementById('carousel-previous');
+const btnNext = document.getElementById('carousel-next');
+const carousel = document.querySelector('.carousel');
+const carouselItem = document.querySelector('.carousel-item');
 // pinch zoom gesture variables
-// code partially based on :
-// github.com/mdn/dom-examples/blob/main/pointerevents/Pinch_zoom_gestures.html
-// 
 // Global variables to cache event state
 var evCache = new Array();
 var prevDiff = -1;
@@ -49,19 +54,19 @@ var prevDiff = -1;
 
 // start stop stream with button
 document.addEventListener('DOMContentLoaded',()=>{
-  // show initial message over stream area
-  loadingMsg.hidden = false;
-  // set camera initial values
-  //cameraInitialValues();
+    //hide control
+    //controllerContainer.style.display = 'none';
+    // show initial message over stream area
+    loadingMsg.hidden = false;
+    // set camera initial values
+    //cameraInitialValues();
 })
-
 // adjust screen with orientation
 if ('orientation' in screen){
     screen.addEventListener('change',()=>{
         screenStatus(fullScreenStatus.innerHTML);
     });
 }
-
 // return to normal mode(close full screen)
 // if back button is pressed instead of full screen button
 document.addEventListener('fullscreenchange',()=>{
@@ -74,7 +79,6 @@ document.addEventListener('fullscreenchange',()=>{
     }
 })
 // menu options
-
 // principal buttons(stream,picture,control) status and color
 document.querySelectorAll('.action-control').forEach((el)=>{
     el.addEventListener('click',()=>{
@@ -91,7 +95,6 @@ document.querySelectorAll('.action-control').forEach((el)=>{
         }
     })
 })
-
 // start/stop stream
 btnStream.addEventListener('click',()=>{
     if(streamStatus.innerHTML === '0'){
@@ -111,7 +114,6 @@ btnStream.addEventListener('click',()=>{
         btnFullScreenContainer.hidden = false;
     }
 })
-
 // open/close menu options
 btnMenu.addEventListener('click',()=>{
     menuContainer.hidden = false;
@@ -171,6 +173,27 @@ btnFullScreen.addEventListener('click',()=>{
     }
 })
 
+// controller
+// carousel control
+btnPrevious.addEventListener('click',()=>{
+    carousel.scrollBy({ left: -carouselItem.offsetWidth, behavior: "smooth" });
+    btnPrevious.style.color = 'rgba(128,128,128, 0.2)';
+    btnNext.style.color = 'black';
+})
+btnNext.addEventListener('click',()=>{
+    carousel.scrollBy({ left: carouselItem.offsetWidth, behavior: "smooth" });
+    btnPrevious.style.color = 'black';
+    btnNext.style.color = 'rgba(128,128,128, 0.2)';
+})
+// show/hide control
+btnControl.addEventListener('click',()=>{
+    if(controlStatus.innerHTML === '0'){
+        controllerContainer.style.display = 'none';
+    }
+    else if (controlStatus.innerHTML === '1'){
+        controllerContainer.style.display = 'flex';
+    }
+})
 //----------------------------------------------------------------------
 
 /**
@@ -320,6 +343,7 @@ function stopStream(){
 
 // landscape/portrait image container
 function normalLandscape(){
+    /*
     var landscapeMin = window.matchMedia('only screen and (max-height:430px) and (orientation:landscape)');
     var lanscaspeMid = window.matchMedia('only screen and (min-height:431px) and (max-height:800px) and (orientation:landscape)');
     var landscapeMax = window.matchMedia('only screen and (min-height:801px)');
@@ -343,7 +367,7 @@ function normalLandscape(){
     view.style.width = '100%';
     view.style.height = '100%';
     view.style.objectFit = 'cover';
-
+    */
     document.querySelectorAll('.color-control').forEach((el)=>{
         el.style.filter = 'invert(0%) sepia(0%) saturate(18%) hue-rotate(293deg) brightness(102%) contrast(105%)'; 
     })
@@ -351,6 +375,7 @@ function normalLandscape(){
     //console.log("normal landscape");
 }
 function normalPortrait(){
+    /*
     streamContainer.style.width = 'calc(100vw - 80px)';
     streamContainer.style.height = 'calc(0.70*(100vw - 80px))';
     streamContainer.style.top = '4em';
@@ -358,6 +383,7 @@ function normalPortrait(){
     view.style.width = '100%';
     view.style.height = '100%';
     view.style.objectFit = 'cover';
+    */
 
     document.querySelectorAll('.color-control').forEach((el)=>{
         el.style.filter = 'invert(0%) sepia(0%) saturate(18%) hue-rotate(293deg) brightness(102%) contrast(105%)'; 
@@ -366,13 +392,14 @@ function normalPortrait(){
     //console.log("normal portrait");
 }
 function fullLandscape(){
+    /*
     streamContainer.style.width = '100vw';
     streamContainer.style.height = '100vh';
     streamContainer.style.top = '0em';
     
     view.style.height = '100vh';
     view.style.width = 'auto';
-    
+    */
     document.querySelectorAll('.color-control').forEach((el)=>{
         el.style.filter = 'invert(100%) sepia(3%) saturate(549%) hue-rotate(219deg) brightness(119%) contrast(100%)'; 
     })
@@ -380,13 +407,14 @@ function fullLandscape(){
     //console.log("full landscape");
 }
 function fullPortrait(){
+    /*
     streamContainer.style.width = '100vw';
     streamContainer.style.height = '100vh';
     streamContainer.style.top = '0em';
     
     view.style.width = '100vw';
     view.style.height = 'auto';
-    
+    */
     document.querySelectorAll('.color-control').forEach((el)=>{
         el.style.filter = 'invert(100%) sepia(3%) saturate(549%) hue-rotate(219deg) brightness(119%) contrast(100%)'; 
     })
