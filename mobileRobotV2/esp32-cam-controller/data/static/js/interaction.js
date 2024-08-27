@@ -41,6 +41,24 @@ const btnPrevious = document.getElementById('carousel-previous');
 const btnNext = document.getElementById('carousel-next');
 const carousel = document.querySelector('.carousel');
 const carouselItem = document.querySelector('.carousel-item');
+const controllerButtons = document.querySelectorAll('.c-buttons');
+const buttonsData = document.getElementById('buttons-data');
+// controller buttons
+// Object to store intervals for each button
+let buttonsInterval = {};
+// time interval(to update the controller array) in ms, 
+let timeInterval = 50;
+// to detect a single/long touch action
+let touchStartTime;
+let longTouchTimeout;
+const longTouchThreshold = 300;
+
+// controller joystick
+
+// controller data 
+let controllerArray = ['0','0','0','0','0','0','0','0'];
+let controllerString;
+
 // pinch zoom gesture variables
 // Global variables to cache event state
 var evCache = new Array();
@@ -60,6 +78,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     loadingMsg.hidden = false;
     // set camera initial values
     //cameraInitialValues();
+
+    // observe control buttons changes
+    textContentChanges(buttonsData);
 })
 // adjust screen with orientation
 if ('orientation' in screen){
@@ -91,7 +112,7 @@ document.querySelectorAll('.action-control').forEach((el)=>{
                 el.querySelector('.status-control').innerHTML = '0';
                 el.style.border = 'solid red 2px';
             }
-            console.log(el.querySelector('.status-control').innerHTML);
+            //console.log(el.querySelector('.status-control').innerHTML);
         }
     })
 })
@@ -193,6 +214,52 @@ btnControl.addEventListener('click',()=>{
     else if (controlStatus.innerHTML === '1'){
         controllerContainer.style.display = 'flex';
     }
+})
+/*
+// buttons control with click event
+controllerButtons.forEach(el=>{
+    el.addEventListener('click',()=>{
+        buttonsData.innerHTML = el.value;
+        console.log(el.value);
+    })
+})
+*/
+
+// buttons control with touch event
+controllerButtons.forEach(el=>{
+    // the unique identifier for every button
+    const buttonId = el.id;
+    el.addEventListener('touchstart',(event)=>{
+        event.preventDefault();
+        // time interval must set for each button
+        // uptade interval every 50ms
+        buttonsInterval[buttonId] = setInterval(()=>{
+            controllerArray[7] = el.value;
+            controllerString = controllerArray.join("");
+            buttonsData.innerHTML = el.value;
+            console.log(controllerString);
+        },timeInterval);
+
+    })
+    el.addEventListener('touchend',()=>{
+        // clear interval for a specific button
+        clearInterval(buttonsInterval[buttonId]);
+        // remove the reference for the interval object
+        delete buttonsInterval[buttonId];
+        //
+        controllerArray[7] = '0';
+        controllerString = controllerArray.join("");
+        //
+        console.log(controllerString);
+    })
+    el.addEventListener('touchcancel',()=>{
+        clearInterval(buttonsInterval[buttonId]);
+        delete buttonsInterval[buttonId];
+        controllerArray[7] = '0';
+        controllerString = controllerArray.join("");
+        
+        console.log(controllerString);
+    })
 })
 //----------------------------------------------------------------------
 
@@ -532,5 +599,52 @@ function setXclkValue(value){
     .catch(error=>{
         //console.log("Error[-1]:"+error);
     })
+}
+
+// observe innerHTML changes from a specific element
+function textContentChanges(element){
+    let observerTime = 500;
+    const observeConfig = {characterData: true,childList: true,subtree: true};
+    // buttons control with touch event
+    controllerButtons.forEach(el=>{
+        const buttonId = el.id;
+        el.addEventListener('touchstart',()=>{
+            touchStartTime = Date.now();
+            //long touch detected
+            longTouchTimeout = setTimeout(()=>{
+                //console.log("long touch detected")
+                observerTime = 50;
+            },longTouchThreshold);
+        });
+        el.addEventListener('touchend',()=>{
+            const touchDuration = Date.now() - touchStartTime;
+            clearTimeout(longTouchTimeout);
+            observerTime = 500;
+            //single touch detected
+            if (touchDuration < longTouchThreshold) {
+                //console.log("single touch detected");
+            }
+        });
+        el.addEventListener('touchcancel',()=>{
+            clearTimeout(longTouchTimeout);
+            observerTime = 500;
+        });
+    })
+    // observer callback
+    const observerCallback = function(mutationsList){
+        observer.disconnect();
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                //console.log('Inner HTML or text content changed:', mutation.target.innerHTML );
+                setTimeout(()=>{
+                    mutation.target.innerHTML = ' ';
+                    observer.observe(element, observeConfig);
+                },observerTime)
+            }
+        }
+    };
+    // observer action
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(element, observeConfig);
 }
 //----------------------------------------------------------------------
