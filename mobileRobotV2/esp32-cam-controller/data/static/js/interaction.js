@@ -18,10 +18,10 @@ const btnControl = document.getElementById('btn-control');
 const controlStatus = document.getElementById('control-status');
 const btnCamera = document.getElementById('btn-camera');
 // loading message
-var loadingMsg = document.getElementById('loading-container');
+let loadingMsg = document.getElementById('loading-container');
 // full screen 
-var fullScreenStatus = document.getElementById('fs-status');
-var fullScreenIcon = document.getElementById('fs-icon');
+let fullScreenStatus = document.getElementById('fs-status');
+let fullScreenIcon = document.getElementById('fs-icon');
 // menu options
 const xclkValue = document.getElementById('xclk-value');
 const menuContainer = document.getElementById('menu-opt-container');
@@ -47,13 +47,31 @@ const buttonsData = document.getElementById('buttons-data');
 // Object to store intervals for each button
 let buttonsInterval = {};
 // time interval(to update the controller array) in ms, 
-let timeInterval = 50;
+const timeInterval = 50;
 // to detect a single/long touch action
 let touchStartTime;
 let longTouchTimeout;
 const longTouchThreshold = 300;
 
 // controller joystick
+let canvas = document.querySelector('#canvas-joystick');
+// joystick canvas dimension
+let el = window.getComputedStyle(canvas);
+let canvasWidth = parseInt(el.width);
+let canvasHeight = parseInt(el.height);
+// canvas dimension
+let ctx = canvas.getContext('2d');
+// using scale helps to improve the image quality
+const scale = window.devicePixelRatio || 1;
+ctx.canvas.width = canvasWidth*scale;
+ctx.canvas.height = canvasHeight*scale;
+ctx.scale(scale,scale);
+//joystick draw dimensions
+let joystickRadius = 0.7*canvasWidth/2;
+let pointerRadius = 0.25*canvasWidth/2;
+let centerX = canvasWidth/2;
+let centerY = canvasHeight/2;
+let movePointer = false;
 
 // controller data 
 let controllerArray = ['0','0','0','0','0','0','0','0'];
@@ -61,8 +79,8 @@ let controllerString;
 
 // pinch zoom gesture variables
 // Global variables to cache event state
-var evCache = new Array();
-var prevDiff = -1;
+let evCache = new Array();
+let prevDiff = -1;
 //----------------------------------------------------------------------
 
 /**
@@ -81,6 +99,38 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     // observe control buttons changes
     textContentChanges(buttonsData);
+
+    //control initial values
+    if(controlStatus.innerHTML === '0'){
+        controllerContainer.style.display = 'none';
+        btnControl.style.border = 'solid red 2px';
+    }
+    else if (controlStatus.innerHTML === '1'){
+        controllerContainer.style.display = 'flex';
+        btnControl.style.border = 'solid green 2px';
+    }
+
+    //joystick
+    joystick(centerX,centerY,joystickRadius);
+    pointer(centerX,centerY,pointerRadius);
+    document.addEventListener('mousedown',(event)=>{
+        startDrawing(event);
+    })
+    document.addEventListener('mouseup',()=>{
+        stopDrawing();
+    })
+    document.addEventListener('mousemove',(event)=>{
+        draw(event);
+    })
+    document.addEventListener('touchstart',(event)=>{
+        startDrawing(event);
+    });
+    document.addEventListener('touchend',()=>{stopDrawing();});
+    document.addEventListener('touchcancel',()=>{stopDrawing();});
+    document.addEventListener('touchmove',(event)=>{
+        draw(event);
+    });
+
 })
 // adjust screen with orientation
 if ('orientation' in screen){
@@ -301,14 +351,14 @@ function pointermoveHandler(ev) {
         if (prevDiff > 0) {
             if (curDiff > prevDiff) {
                 // The distance between the two pointers has increased
-                //console.log("increase");
+                console.log("increase");
                 ev.target.style.width = "100%";
                 ev.target.style.height = "100%";
                 ev.target.style.objectFit = "cover"; 
             }
             if (curDiff < prevDiff) {
                 // The distance between the two pointers has decreased
-                //console.log("decrease");
+                console.log("decrease");
                 ev.target.style.objectFit = "initial";
                 if ('orientation' in screen && screen.orientation.type === 'portrait-primary'){
                     ev.target.style.width = "100%";
@@ -647,4 +697,131 @@ function textContentChanges(element){
     const observer = new MutationObserver(observerCallback);
     observer.observe(element, observeConfig);
 }
+
+// joystick
+function joystick(x,y,radius){
+    /**
+     * x(float): x coordinate
+     * y(float): y coordinate
+     * radius(float): circle radius
+     */
+    // joystick
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2*Math.PI);
+    ctx.fillStyle = 'rgb(30,30,30)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgb(0,0,0)';
+    ctx.lineWidth = 8;
+    ctx.lineJoin = 'round'; // Make the join between lines rounded
+    ctx.lineCap = 'square'; // Make the ends of the lines rounded
+    ctx.stroke();
+}
+function pointer(x,y,radius){
+    /**
+     * x(float): x coordinate
+     * y(float): y coordinate
+     * radius(float): circle radius
+     */
+    // pointer
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+    ctx.fillStyle = 'rgb(200,200,200)';
+    ctx.fill();
+}
+function clientXY(event){
+    /**
+     * input
+     * - event: event to handle coordinates of the viewport
+     * output
+     * - coord : coordinates inside the canvas
+     */
+    let coord = {};
+    // client mouse or touch position inside the viewport
+    let clientX = event.clientX || event.touches[0].clientX;
+    let clientY = event.clientY || event.touches[0].clientY;
+    // canvas position relative to the viewport 
+    let canvasCoords = canvas.getBoundingClientRect();
+    // move the origin of the coordinate sistem to the top-left corner of the canvas
+    coord.x = clientX - canvasCoords.left;
+    coord.y = clientY - canvasCoords.top;
+    // out of boundaries
+    /*
+    if(coord.x < 0 || coord.y < 0){
+        coord.x = -1;
+        coord.y = -1;
+    }
+    if(coord.x > canvasWidth || coord.y > canvasHeight){
+        coord.x = -1;
+        coord.y = -1;
+    }*/
+    //console.log("coordinate x:",coord.x);
+    //console.log("coordinate y:",coord.y);
+    return coord;
+}
+function dist2points(x1,y1,x2,y2){
+    /**
+     * 
+     */
+    let d = Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2));
+    return d;
+}
+function startDrawing(event){
+    // canvas coordinates
+    let coord = clientXY(event);
+    // pointer distance to the center of the joystick
+    let currentRadius = dist2points(coord.x,coord.y,centerX,centerY);
+    // draw the pointer inside the joystick
+    if (joystickRadius >= currentRadius){
+        // move the pointer only if the event(touch/click) occurs inside the joystick area
+        movePointer = true;
+        // update joystick
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        joystick(centerX,centerY,joystickRadius);
+        pointer(coord.x,coord.y,pointerRadius);
+    }
+}
+function stopDrawing(){
+    movePointer = false;
+    // update joystick
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    joystick(centerX,centerY,joystickRadius);
+    pointer(centerX,centerY,pointerRadius);
+}
+function draw(event){
+    if (movePointer){
+        let coord = clientXY(event);
+        let currentRadius = dist2points(coord.x,coord.y,centerX,centerY);
+        let angleRad = Math.atan2((coord.y - centerY),(coord.x - centerX));
+        let angleDeg = 0;
+        // radian to degree
+        if (Math.sign(angleRad) == -1) {
+            angleDeg = Math.round(-angleRad * 180 / Math.PI);
+        }
+        else {
+            angleDeg = Math.round( 360 - angleRad * 180 / Math.PI);
+        }
+        // pointer radius to 0-100:
+        let strength = Math.round((currentRadius*100)/joystickRadius);
+        if (strength>100){strength=100;}
+        
+        //console.log("angle 0-360:",angleDeg);
+        //console.log("strength 0-100:",strength);
+
+        // update joystick
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        joystick(centerX,centerY,joystickRadius);
+        // update pointer inside the joystick
+        if (joystickRadius >= currentRadius){
+            pointer(coord.x,coord.y,pointerRadius);
+        }
+        // update pointer outside the joystick
+        else{
+            let x = joystickRadius*Math.cos(angleRad) + centerX;
+            let y = joystickRadius*Math.sin(angleRad) + centerY;
+            pointer(x,y,pointerRadius);
+        }
+    }
+    
+}
+
 //----------------------------------------------------------------------

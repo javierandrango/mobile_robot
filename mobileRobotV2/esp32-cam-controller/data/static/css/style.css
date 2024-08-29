@@ -320,17 +320,30 @@ input:checked + .slider:before {
 #carousel-next{
     right: -0.4rem;
 }
-#controller-joystick,#controller-buttons{
+#controller-joystick{
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+#canvas-joystick{
+    /*background-color: yellowgreen;*/
+    width: 180px;
+    height: 180px;
+    transform: none;
+}
+#controller-buttons{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .c-buttons{
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -339,27 +352,43 @@ input:checked + .slider:before {
 .c-buttons-style{
     filter: invert(100%) sepia(3%) saturate(549%) hue-rotate(219deg) brightness(119%) contrast(100%);
 }
+#btn-top-container,#btn-bottom-container,#btn-middle-container{
+    width: 100%;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    /*padding: 10px 0px 10px 0px;*/
+}
+#btn-left-container,#btn-right-container{
+    flex:1;
+    padding: 0;
+}
+#btn-left-container{
+    display: flex;
+    justify-content: right;
+}
+#btn-right-container{
+    display: flex;
+    justify-content: left;
+}
+
 #btn-x{
     background-color: red;
-    position: relative;
-    top:4.5em;
-    left:-5.5em;
 }
+
 #btn-triangle{
     background-color: orange;
-    position: relative;
-    bottom:4.5em;
-    left:2em;
 }
 #btn-circle{
     background-color: rgb(0, 166, 255);
     position: relative;
-    left:2.8em;
+    right: -1.8em;
 }
 #btn-square{
     background-color: green;
     position: relative;
-    left:1.2em;
+    left: -1.8em;
 }
 
 @media only screen and (min-width:315px) and (max-width:359px){
@@ -375,7 +404,6 @@ input:checked + .slider:before {
         height: auto;
     }
 }
-
 @media only screen and (min-width:360px){
     /*camera menu*/
     .input-group{
@@ -391,9 +419,7 @@ input:checked + .slider:before {
     
 }
 @media screen and (min-width:480px){
-    /*extended controller*/
     #controller-container{
-        /*height: calc(0.45*(100vw));*/
         padding-bottom: 5px;
     }
     .carousel-state{
@@ -476,6 +502,16 @@ input:checked + .slider:before {
     #carousel-next{
         right: -1.2rem;
     }
+    /*controller buttons*/
+    #btn-top-container,#btn-bottom-container,#btn-middle-container{
+        padding: 10px 0px 10px 0px;
+    }
+    #btn-circle{
+        right: -3em;
+    }
+    #btn-square{
+        left: -3em;
+    }
 }
 @media only screen and (min-width:480px) and (min-height:641px){
     .carousel{
@@ -529,12 +565,24 @@ input:checked + .slider:before {
         display: none;
     }
     #joystick-data{
-        top:1.5em;
+        top:1em;
         left:15%;
     }
     #buttons-data{
-        top:1.5em;
+        top:1em;
         right:15%;
+    }
+}
+@media only screen and (min-height:321px) and (orientation: landscape){
+    /*controller buttons*/
+    #btn-top-container,#btn-bottom-container,#btn-middle-container{
+        padding: 10px 0px 10px 0px;
+    }
+    #btn-circle{
+        right: -3em;
+    }
+    #btn-square{
+        left: -3em;
     }
 }
 @media only screen and (max-height:639px) and (orientation: landscape){
@@ -582,11 +630,7 @@ input:checked + .slider:before {
         top:0em;
         right:15%;
     }
-
 }
-
-
-
 /*
 @media screen and (min-width:340px){
     .input-group{
