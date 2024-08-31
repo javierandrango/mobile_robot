@@ -43,6 +43,7 @@ const carousel = document.querySelector('.carousel');
 const carouselItem = document.querySelector('.carousel-item');
 const controllerButtons = document.querySelectorAll('.c-buttons');
 const buttonsData = document.getElementById('buttons-data');
+const joystickData = document.getElementById('joystick-data');
 // controller buttons
 // Object to store intervals for each button
 let buttonsInterval = {};
@@ -52,7 +53,6 @@ const timeInterval = 50;
 let touchStartTime;
 let longTouchTimeout;
 const longTouchThreshold = 300;
-
 // controller joystick
 let canvas = document.querySelector('#canvas-joystick');
 // joystick canvas dimension
@@ -712,8 +712,6 @@ function joystick(x,y,radius){
     ctx.fill();
     ctx.strokeStyle = 'rgb(0,0,0)';
     ctx.lineWidth = 8;
-    ctx.lineJoin = 'round'; // Make the join between lines rounded
-    ctx.lineCap = 'square'; // Make the ends of the lines rounded
     ctx.stroke();
 }
 function pointer(x,y,radius){
@@ -786,6 +784,8 @@ function stopDrawing(){
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     joystick(centerX,centerY,joystickRadius);
     pointer(centerX,centerY,pointerRadius);
+    //update innerHTML value
+    joystickData.innerHTML = '000000';
 }
 function draw(event){
     if (movePointer){
@@ -820,6 +820,10 @@ function draw(event){
             let y = joystickRadius*Math.sin(angleRad) + centerY;
             pointer(x,y,pointerRadius);
         }
+
+        //update innerHTML value
+        joystickData.innerHTML = angleDeg.toString().padStart(3,'0')+strength.toString().padStart(3,'0');
+        
     }
     
 }
